@@ -1,27 +1,32 @@
 [project]
-title = "🌍 World Stocks Explorer"
+title = "🤖 AI Job Market Explorer 2025"
 version = "1.0.0"
 port = 8501
-slug = "world-stocks-explorer"
+slug = "ai-job-market-explorer"
 entrypoint = "hello.py"
 
 [branding]
-title = "🌍 World Stocks Explorer"
-favicon = "static/stocks.ico"
+title = "🤖 AI Job Market Explorer 2025"
+favicon = "static/ai-jobs.ico"
 color_mode = "dark"
-description = "Real-time analysis of global stock market movements"
+description = "Comprehensive analysis of global AI job opportunities and salary trends"
 
 [theme]
-primary_color = "#2563eb"
-secondary_color = "#1e40af"
-background_color = "#0f172a"
-text_color = "#f8fafc"
+primary_color = "#00d4aa"
+secondary_color = "#0066cc"
+background_color = "#0f0f23"
+text_color = "#ffffff"
 
 [layout]
-sidebar_width = 300
-main_width = 1200
-chart_height = 600
+sidebar_width = 350
+main_width = 1400
+chart_height = 500
 
 [data]
-cache_size = "1GB"
-refresh_interval = "5m" 
+cache_size = "2GB"
+refresh_interval = "1h"
+
+[features]
+enable_filters = true
+enable_export = true
+enable_sharing = true

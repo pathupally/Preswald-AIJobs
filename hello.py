@@ -1,15 +1,15 @@
 """
-World Stocks Explorer - Interactive Analysis Dashboard
+AI Job Market Explorer - Interactive Analysis Dashboard
 
-This Preswald application provides real-time analysis of global stock market data,
-featuring interactive visualizations and dynamic filtering capabilities.
+This Preswald application provides real-time analysis of global AI job market data,
+featuring salary trends, skill demands, and geographic distribution insights.
 """
 
 from typing import List, Optional
 from datetime import datetime, timedelta
 import os
 
-from preswald import connect, get_df, query, table, text, plotly, slider, selectbox, get_workflow
+from preswald import connect, get_df, query, table, text, plotly, slider, selectbox, multiselect, get_workflow
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -24,13 +24,15 @@ except Exception as e:
 workflow = get_workflow()
 
 def load_data():
-    """Load and preprocess stock data"""
+    """Load and preprocess AI job market data"""
     try:
         # Try different possible file paths
         possible_paths = [
-            "World-Stock-Prices-Dataset.csv",
-            "data/World-Stock-Prices-Dataset.csv",
-            "./data/World-Stock-Prices-Dataset.csv"
+            "AI-Job-Market-Dataset.csv",
+            "data/AI-Job-Market-Dataset.csv",
+            "./data/AI-Job-Market-Dataset.csv",
+            "main_dataset.csv",
+            "data/main_dataset.csv"
         ]
         
         df_raw = None
@@ -46,337 +48,397 @@ def load_data():
         if df_raw is None:
             # Try using Preswald's get_df
             try:
-                df_raw = get_df("World-Stock-Prices-Dataset.csv")
+                df_raw = get_df("main_dataset.csv")
             except:
                 print("⚠️ Could not find data file. Creating sample data...")
-                # Create sample data if file not found
-                dates = pd.date_range(start='2024-01-01', end='2025-06-06', freq='D')
-                symbols = ['PTON', 'AAPL', 'GOOGL', 'MSFT', 'TSLA']
-                exchanges = ['NASDAQ', 'NYSE']
+                # Create comprehensive sample data based on dataset description
+                np.random.seed(42)
+                
+                job_titles = [
+                    'ML Engineer', 'Data Scientist', 'AI Research Scientist', 'AI Engineer',
+                    'Deep Learning Engineer', 'Computer Vision Engineer', 'NLP Engineer',
+                    'Data Engineer', 'AI Product Manager', 'Machine Learning Researcher',
+                    'AI Consultant', 'Data Analyst', 'AI Architect', 'MLOps Engineer'
+                ]
+                
+                countries = [
+                    'United States', 'Germany', 'United Kingdom', 'Canada', 'France',
+                    'Netherlands', 'Switzerland', 'Australia', 'India', 'Singapore',
+                    'Sweden', 'Israel', 'Japan', 'South Korea', 'China'
+                ]
+                
+                experience_levels = ['EN', 'MI', 'SE', 'EX']
+                employment_types = ['FT', 'PT', 'CT', 'FL']
+                company_sizes = ['S', 'M', 'L']
                 
                 data = []
-                for symbol in symbols:
-                    base_price = np.random.uniform(50, 200)
-                    for date in dates:
-                        price = base_price * (1 + np.random.normal(0, 0.02))
-                        data.append({
-                            'Date': date,
-                            'Close': price,
-                            'Brand_Name': symbol.lower(),
-                            'Ticker': symbol,
-                            'Country': 'usa',
-                            'Volume': np.random.randint(1000000, 50000000)
-                        })
-                        base_price = price
+                for i in range(1000):  # Generate 1000 sample jobs
+                    exp_level = np.random.choice(experience_levels, p=[0.2, 0.4, 0.3, 0.1])
+                    
+                    # Salary based on experience level and location
+                    base_salaries = {'EN': 75000, 'MI': 105000, 'SE': 140000, 'EX': 180000}
+                    country = np.random.choice(countries)
+                    
+                    # Country salary multipliers
+                    country_multipliers = {
+                        'United States': 1.0, 'Switzerland': 1.2, 'Germany': 0.85,
+                        'United Kingdom': 0.9, 'Canada': 0.88, 'Australia': 0.92,
+                        'Netherlands': 0.87, 'France': 0.82, 'Singapore': 0.95,
+                        'Sweden': 0.85, 'India': 0.3, 'China': 0.4, 'Japan': 0.75,
+                        'South Korea': 0.6, 'Israel': 0.85
+                    }
+                    
+                    base_salary = base_salaries[exp_level]
+                    multiplier = country_multipliers.get(country, 0.8)
+                    salary = int(base_salary * multiplier * np.random.uniform(0.8, 1.4))
+                    
+                    data.append({
+                        'job_id': f'AI{i+1:04d}',
+                        'job_title': np.random.choice(job_titles),
+                        'salary_usd': salary,
+                        'salary_currency': 'USD',
+                        'experience_level': exp_level,
+                        'employment_type': np.random.choice(employment_types, p=[0.8, 0.05, 0.1, 0.05]),
+                        'company_location': country,
+                        'company_size': np.random.choice(company_sizes, p=[0.3, 0.4, 0.3]),
+                        'remote_ratio': np.random.choice([0, 50, 100], p=[0.3, 0.4, 0.3]),
+                        'years_experience': np.random.randint(0, 15),
+                        'industry': np.random.choice(['Technology', 'Finance', 'Healthcare', 'Retail', 'Automotive', 'Research'])
+                    })
                 
                 df_raw = pd.DataFrame(data)
         
-        # Standardize column names
-        column_mapping = {
-            'Date': 'date',
-            'Close': 'close',
-            'Ticker': 'symbol',
-            'Brand_Name': 'brand_name',
-            'Country': 'exchange',
-            'Volume': 'volume'
-        }
-        
-        df_raw = df_raw.rename(columns=column_mapping)
-        
         # Ensure we have required columns
-        if 'date' not in df_raw.columns:
-            df_raw['date'] = pd.date_range(start='2024-01-01', periods=len(df_raw), freq='D')
+        required_columns = ['job_id', 'job_title', 'salary_usd', 'experience_level', 
+                          'employment_type', 'company_location', 'company_size']
         
-        if 'exchange' not in df_raw.columns:
-            df_raw['exchange'] = 'NASDAQ'
-            
-        if 'symbol' not in df_raw.columns:
-            df_raw['symbol'] = 'SAMPLE'
-            
-        # Convert date column
-        df_raw['date'] = pd.to_datetime(df_raw['date'])
+        for col in required_columns:
+            if col not in df_raw.columns:
+                print(f"⚠️ Warning: Missing column {col}")
+                if col == 'salary_usd':
+                    df_raw[col] = 100000
+                elif col == 'experience_level':
+                    df_raw[col] = 'MI'
+                else:
+                    df_raw[col] = 'Unknown'
         
         # Clean the data
-        df_clean = df_raw.dropna(subset=['close'])
+        df_clean = df_raw.dropna(subset=['salary_usd'])
+        df_clean = df_clean[df_clean['salary_usd'] > 0]  # Remove invalid salaries
         
-        # Ensure we have the required columns
-        required_columns = ['date', 'exchange', 'symbol', 'close']
-        missing_cols = [col for col in required_columns if col not in df_clean.columns]
-        
-        if missing_cols:
-            print(f"⚠️ Warning: Missing columns {missing_cols}, using defaults")
-            for col in missing_cols:
-                if col == 'exchange':
-                    df_clean[col] = 'NASDAQ'
-                elif col == 'symbol':
-                    df_clean[col] = 'STOCK'
-                elif col == 'close':
-                    df_clean[col] = 100.0
-        
-        print(f"✅ Data loaded successfully: {len(df_clean)} rows, {len(df_clean['symbol'].unique())} unique symbols")
+        print(f"✅ Data loaded successfully: {len(df_clean)} jobs, {len(df_clean['job_title'].unique())} unique roles")
         return df_clean
         
     except Exception as e:
         print(f"⚠️ Error loading data: {str(e)}")
-        # Return sample data as fallback
-        sample_data = pd.DataFrame({
-            'date': pd.date_range(start='2024-01-01', periods=100, freq='D'),
-            'close': np.random.uniform(50, 200, 100),
-            'symbol': 'SAMPLE',
-            'exchange': 'NYSE'
+        # Return minimal sample data as fallback
+        return pd.DataFrame({
+            'job_id': ['AI001'],
+            'job_title': ['Data Scientist'],
+            'salary_usd': [100000],
+            'experience_level': ['MI'],
+            'employment_type': ['FT'],
+            'company_location': ['United States'],
+            'company_size': ['M']
         })
-        return sample_data
 
 @workflow.atom()
 def title_display():
-    return text("# 🌍 World Stocks Explorer")
+    return text("# 🤖 AI Job Market Explorer 2025")
 
 @workflow.atom()
 def subtitle_display():
-    return text("Analyze global stock market movements with interactive visualizations")
+    return text("Comprehensive analysis of global AI job opportunities, salaries, and market trends")
 
 @workflow.atom()
-def rolling_window_control():
-    return slider(
-        "Rolling Window (days)",
-        min_value=5,
-        max_value=60,
-        value=30,
-        help="Adjust the window size for moving averages"
-    )
-
-@workflow.atom()
-def exchange_control():
+def experience_filter():
     df = load_data()
     if df is None or df.empty:
-        return selectbox("Exchange", options=["All"], help="No data loaded")
+        return selectbox("Experience Level", options=["All"], help="No data loaded")
     
-    exchanges = ["All"] + sorted(df['exchange'].unique().tolist())
+    exp_mapping = {
+        'EN': 'Entry Level',
+        'MI': 'Mid Level', 
+        'SE': 'Senior Level',
+        'EX': 'Executive Level'
+    }
+    
+    levels = ["All"] + [f"{code} - {exp_mapping.get(code, code)}" 
+                       for code in sorted(df['experience_level'].unique())]
+    
     return selectbox(
-        "Exchange",
-        options=exchanges,
-        help="Select a specific exchange or view all"
+        "Experience Level",
+        options=levels,
+        help="Filter by experience level"
     )
 
-def get_filtered_data(rolling_window=30, exchange="All"):
-    """Get filtered and processed data"""
+@workflow.atom()
+def location_filter():
+    df = load_data()
+    if df is None or df.empty:
+        return selectbox("Location", options=["All"], help="No data loaded")
+    
+    locations = ["All"] + sorted(df['company_location'].unique().tolist())
+    return selectbox(
+        "Location",
+        options=locations,
+        help="Filter by company location"
+    )
+
+@workflow.atom()
+def salary_range_filter():
+    df = load_data()
+    if df is None or df.empty:
+        return text("### 💰 Salary Range: No data available")
+    
+    min_salary = int(df['salary_usd'].min())
+    max_salary = int(df['salary_usd'].max())
+    
+    return slider(
+        "Minimum Salary (USD)",
+        min_value=min_salary,
+        max_value=max_salary,
+        value=min_salary,
+        help="Filter jobs by minimum salary"
+    )
+
+def get_filtered_data(experience="All", location="All", min_salary=0):
+    """Get filtered data based on current selections"""
     df = load_data()
     if df is None or df.empty:
         return pd.DataFrame()
     
-    # Filter by exchange
-    if exchange != "All":
-        filtered_df = df[df['exchange'] == exchange].copy()
-    else:
-        filtered_df = df.copy()
+    filtered_df = df.copy()
     
-    # Filter to last 365 days
-    one_year_ago = datetime.now() - timedelta(days=365)
-    filtered_df = filtered_df[filtered_df['date'] >= one_year_ago].copy()
+    # Filter by experience level
+    if experience != "All" and " - " in experience:
+        exp_code = experience.split(" - ")[0]
+        filtered_df = filtered_df[filtered_df['experience_level'] == exp_code]
     
-    if filtered_df.empty:
-        return filtered_df
+    # Filter by location
+    if location != "All":
+        filtered_df = filtered_df[filtered_df['company_location'] == location]
     
-    # Sort data
-    filtered_df = filtered_df.sort_values(['exchange', 'symbol', 'date'])
-    
-    # Calculate technical indicators
-    filtered_df['daily_change'] = filtered_df.groupby(['exchange', 'symbol'])['close'].pct_change() * 100
-    
-    # Rolling averages and Bollinger Bands
-    filtered_df['rolling_avg'] = filtered_df.groupby(['exchange', 'symbol'])['close'].rolling(
-        window=rolling_window, min_periods=1
-    ).mean().reset_index(0, drop=True)
-    
-    filtered_df['rolling_std'] = filtered_df.groupby(['exchange', 'symbol'])['close'].rolling(
-        window=rolling_window, min_periods=1
-    ).std().reset_index(0, drop=True)
-    
-    filtered_df['upper_band'] = filtered_df['rolling_avg'] + (2 * filtered_df['rolling_std'])
-    filtered_df['lower_band'] = filtered_df['rolling_avg'] - (2 * filtered_df['rolling_std'])
+    # Filter by salary
+    filtered_df = filtered_df[filtered_df['salary_usd'] >= min_salary]
     
     return filtered_df
 
 @workflow.atom()
-def analysis_period_info():
-    return text(f"### 📊 Analysis Period\nLast 365 days with rolling window analysis")
-
-@workflow.atom()
-def market_overview_info():
+def market_overview():
     df = get_filtered_data()
     if df.empty:
-        return text("### 📈 Market Overview\nNo data available")
+        return text("### 📊 Market Overview\nNo data matches current filters")
     
-    unique_stocks = len(df['symbol'].unique()) if 'symbol' in df.columns else 0
-    unique_exchanges = len(df['exchange'].unique()) if 'exchange' in df.columns else 0
+    total_jobs = len(df)
+    avg_salary = df['salary_usd'].mean()
+    unique_companies = len(df['company_location'].unique())
     
-    return text(f"### 📈 Market Overview\nAnalyzing {unique_stocks} stocks across {unique_exchanges} exchanges")
+    return text(f"""### 📊 Market Overview
+**{total_jobs:,}** job postings analyzed  
+**${avg_salary:,.0f}** average salary  
+**{unique_companies}** countries represented  
+""")
 
 @workflow.atom()
-def latest_update_info():
+def salary_by_experience_chart():
     df = get_filtered_data()
     if df.empty:
-        return text("### 📅 Latest Update\nNo recent data available")
+        return text("No data available for salary analysis")
     
-    latest_date = df['date'].max().strftime('%Y-%m-%d') if not df.empty else "Unknown"
-    return text(f"### 📅 Latest Update\nData as of {latest_date}")
-
-@workflow.atom()
-def price_movements_table():
-    df = get_filtered_data()
-    if df.empty or 'daily_change' not in df.columns:
-        empty_df = pd.DataFrame(columns=['Date', 'Exchange', 'Symbol', 'Close', 'Daily Change %'])
-        return table(empty_df, title="Top 10 Largest Daily Price Movements - No Data")
+    # Calculate average salary by experience level
+    exp_mapping = {
+        'EN': 'Entry Level',
+        'MI': 'Mid Level', 
+        'SE': 'Senior Level',
+        'EX': 'Executive Level'
+    }
     
-    # Get top 10 largest price movements
-    movements_df = df.dropna(subset=['daily_change'])
-    if movements_df.empty:
-        empty_df = pd.DataFrame(columns=['Date', 'Exchange', 'Symbol', 'Close', 'Daily Change %'])
-        return table(empty_df, title="Top 10 Largest Daily Price Movements - No Data")
+    salary_by_exp = df.groupby('experience_level')['salary_usd'].agg(['mean', 'count']).reset_index()
+    salary_by_exp['experience_label'] = salary_by_exp['experience_level'].map(exp_mapping)
+    salary_by_exp = salary_by_exp.sort_values('mean')
     
-    top_movements = movements_df.nlargest(10, 'daily_change', key=abs)[
-        ['date', 'exchange', 'symbol', 'close', 'daily_change']
-    ].round(2)
+    fig = px.bar(
+        salary_by_exp,
+        x='experience_label',
+        y='mean',
+        title='Average Salary by Experience Level',
+        labels={'mean': 'Average Salary (USD)', 'experience_label': 'Experience Level'},
+        color='mean',
+        color_continuous_scale='viridis',
+        text='mean'
+    )
     
-    # Rename columns for display
-    top_movements.columns = ['Date', 'Exchange', 'Symbol', 'Close', 'Daily Change %']
-    
-    return table(top_movements, title="Top 10 Largest Daily Price Movements")
-
-@workflow.atom()
-def price_analysis_header():
-    return text("### 📈 Price Analysis with Bollinger Bands")
-
-@workflow.atom()
-def price_analysis_chart():
-    # Get current control values
-    rolling_window = 30  # Default value
-    exchange = "All"     # Default value
-    
-    df = get_filtered_data(rolling_window, exchange)
-    
-    if df.empty:
-        fig = go.Figure()
-        fig.add_annotation(
-            text="No data available for chart",
-            xref="paper", yref="paper",
-            x=0.5, y=0.5, showarrow=False,
-            font=dict(size=16, color="gray")
-        )
-        fig.update_layout(
-            title="Price Analysis - No Data Available",
-            template="plotly_dark",
-            height=400
-        )
-        return plotly(fig)
-    
-    # Create the price chart with Bollinger Bands
-    fig = go.Figure()
-    
-    # Group data for better visualization
-    if len(df['symbol'].unique()) > 1:
-        # Multiple symbols - show aggregated data
-        daily_avg = df.groupby('date').agg({
-            'close': 'mean',
-            'rolling_avg': 'mean',
-            'upper_band': 'mean',
-            'lower_band': 'mean'
-        }).reset_index()
-        
-        fig.add_trace(go.Scatter(
-            x=daily_avg['date'],
-            y=daily_avg['rolling_avg'],
-            name='Average Price',
-            line=dict(color='#2563eb', width=3)
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=daily_avg['date'],
-            y=daily_avg['upper_band'],
-            name='Upper Band',
-            line=dict(color='rgba(37, 99, 235, 0.3)', width=1),
-            fill=None
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=daily_avg['date'],
-            y=daily_avg['lower_band'],
-            name='Lower Band',
-            line=dict(color='rgba(37, 99, 235, 0.3)', width=1),
-            fill='tonexty',
-            fillcolor='rgba(37, 99, 235, 0.1)'
-        ))
-        
-    else:
-        # Single symbol
-        fig.add_trace(go.Scatter(
-            x=df['date'],
-            y=df['close'],
-            name='Close Price',
-            line=dict(color='#22c55e', width=2),
-            opacity=0.7
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=df['date'],
-            y=df['rolling_avg'],
-            name='Rolling Average',
-            line=dict(color='#2563eb', width=3)
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=df['date'],
-            y=df['upper_band'],
-            name='Upper Band',
-            line=dict(color='rgba(37, 99, 235, 0.3)', width=1),
-            fill=None
-        ))
-        
-        fig.add_trace(go.Scatter(
-            x=df['date'],
-            y=df['lower_band'],
-            name='Lower Band',
-            line=dict(color='rgba(37, 99, 235, 0.3)', width=1),
-            fill='tonexty',
-            fillcolor='rgba(37, 99, 235, 0.1)'
-        ))
-    
-    # Update layout
-    title = f"{exchange} Price Analysis" if exchange != "All" else "Global Stock Price Analysis"
+    fig.update_traces(texttemplate='$%{text:,.0f}', textposition='outside')
     fig.update_layout(
-        title=title,
-        xaxis_title="Date",
-        yaxis_title="Price ($)",
-        template="plotly_dark",
-        showlegend=True,
-        hovermode='x unified',
+        template='plotly_dark',
+        showlegend=False,
+        height=400,
+        yaxis_tickformat='$,.0f'
+    )
+    
+    return plotly(fig)
+
+@workflow.atom()
+def top_locations_chart():
+    df = get_filtered_data()
+    if df.empty:
+        return text("No data available for location analysis")
+    
+    # Top 10 locations by job count
+    top_locations = df['company_location'].value_counts().head(10).reset_index()
+    top_locations.columns = ['location', 'job_count']
+    
+    fig = px.bar(
+        top_locations,
+        x='job_count',
+        y='location',
+        orientation='h',
+        title='Top 10 Countries by Job Postings',
+        labels={'job_count': 'Number of Jobs', 'location': 'Country'},
+        color='job_count',
+        color_continuous_scale='plasma'
+    )
+    
+    fig.update_layout(
+        template='plotly_dark',
+        showlegend=False,
         height=500,
-        margin=dict(l=50, r=50, t=80, b=50)
+        yaxis={'categoryorder': 'total ascending'}
+    )
+    
+    return plotly(fig)
+
+@workflow.atom()
+def salary_distribution_chart():
+    df = get_filtered_data()
+    if df.empty:
+        return text("No data available for salary distribution")
+    
+    fig = px.histogram(
+        df,
+        x='salary_usd',
+        nbins=30,
+        title='Salary Distribution',
+        labels={'salary_usd': 'Salary (USD)', 'count': 'Number of Jobs'},
+        color_discrete_sequence=['#00d4aa']
+    )
+    
+    fig.update_layout(
+        template='plotly_dark',
+        height=400,
+        xaxis_tickformat='$,.0f'
+    )
+    
+    return plotly(fig)
+
+@workflow.atom()
+def remote_work_analysis():
+    df = get_filtered_data()
+    if df.empty or 'remote_ratio' not in df.columns:
+        return text("No remote work data available")
+    
+    remote_mapping = {
+        0: 'On-site',
+        50: 'Hybrid',
+        100: 'Fully Remote'
+    }
+    
+    df['remote_label'] = df['remote_ratio'].map(remote_mapping)
+    remote_dist = df['remote_label'].value_counts().reset_index()
+    remote_dist.columns = ['work_type', 'count']
+    
+    fig = px.pie(
+        remote_dist,
+        values='count',
+        names='work_type',
+        title='Remote Work Distribution',
+        color_discrete_sequence=['#ff6b6b', '#4ecdc4', '#45b7d1']
+    )
+    
+    fig.update_layout(
+        template='plotly_dark',
+        height=400
+    )
+    
+    return plotly(fig)
+
+@workflow.atom()
+def top_job_titles_table():
+    df = get_filtered_data()
+    if df.empty:
+        return table(pd.DataFrame(), title="Top Job Titles - No Data")
+    
+    # Top job titles with average salary
+    job_stats = df.groupby('job_title').agg({
+        'salary_usd': ['mean', 'count'],
+        'job_id': 'count'
+    }).reset_index()
+    
+    job_stats.columns = ['Job Title', 'Avg Salary', 'Salary Count', 'Total Postings']
+    job_stats = job_stats.sort_values('Total Postings', ascending=False).head(10)
+    job_stats['Avg Salary'] = job_stats['Avg Salary'].round(0).astype(int)
+    job_stats = job_stats[['Job Title', 'Total Postings', 'Avg Salary']]
+    
+    return table(job_stats, title="Top 10 Most In-Demand AI Job Titles")
+
+@workflow.atom()
+def company_size_analysis():
+    df = get_filtered_data()
+    if df.empty or 'company_size' not in df.columns:
+        return text("No company size data available")
+    
+    size_mapping = {
+        'S': 'Small (<50)',
+        'M': 'Medium (50-250)',
+        'L': 'Large (>250)'
+    }
+    
+    df['size_label'] = df['company_size'].map(size_mapping)
+    size_salary = df.groupby('size_label')['salary_usd'].mean().reset_index()
+    
+    fig = px.bar(
+        size_salary,
+        x='size_label',
+        y='salary_usd',
+        title='Average Salary by Company Size',
+        labels={'salary_usd': 'Average Salary (USD)', 'size_label': 'Company Size'},
+        color='salary_usd',
+        color_continuous_scale='blues'
+    )
+    
+    fig.update_layout(
+        template='plotly_dark',
+        showlegend=False,
+        height=400,
+        yaxis_tickformat='$,.0f'
     )
     
     return plotly(fig)
 
 def main():
     """Main application function"""
-    # Display componentst
+    # Header
     title_display()
     subtitle_display()
     
-    # Controls
-    rolling_window_control()
-    exchange_control()
+    # Filters
+    experience_filter()
+    location_filter()
+    salary_range_filter()
     
-    # Information sections
-    analysis_period_info()
-    market_overview_info()
-    latest_update_info()
+    # Overview
+    market_overview()
     
-    # Data tables
-    price_movements_table()
+    # Charts and analysis
+    salary_by_experience_chart()
+    top_locations_chart()
+    salary_distribution_chart()
+    remote_work_analysis()
+    company_size_analysis()
     
-    # Charts
-    price_analysis_header()
-    price_analysis_chart()
+    # Data table
+    top_job_titles_table()
 
 if __name__ == "__main__":
     main()
