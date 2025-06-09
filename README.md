@@ -1,88 +1,70 @@
-# 🌍 World Stocks Explorer
-
+🌍 World Stocks Explorer
 An elegant, real-time analysis dashboard for global stock market data, built with Preswald.
 
-![Dashboard Preview](images/dashboard-preview.png)
 
-## 📊 Features
 
-- **Interactive Analysis**
-  - Dynamic rolling window (5-60 days) for trend analysis
-  - Exchange-specific or global market view
-  - Real-time data filtering and visualization
+🚀 Quick Start
+Automated Setup (Recommended)
+bash
+# Clone or download the project
+# Navigate to project directory
+cd World-Stocks-Explorer
 
-- **Advanced Analytics**
-  - Bollinger Bands for volatility analysis
-  - Top 10 largest daily price movements
-  - 365-day historical data view
-  - Rolling averages with standard deviation bands
+# Run the setup script
+python3 setup.py
 
-- **Modern UI/UX**
-  - Dark mode interface
-  - Responsive layout
-  - Interactive charts with hover details
-  - Clean, intuitive controls
+# Activate virtual environment
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
-## 🚀 Quick Start
+# Run the application
+preswald run
+Manual Setup
+bash
+# 1. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
-1. **Setup Environment**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-   pip3 install -r requirements.txt
-   ```
+# 2. Install dependencies
+pip install -r requirements.txt
 
-2. **Run the App**
-   ```bash
-   preswald run
-   ```
-   Or use your IDE's Preview functionality.
+# 3. Generate sample data (if you don't have the dataset)
+python generate_sample_data.py
 
-## 📁 Project Structure
-
-```
+# 4. Run the application
+preswald run
+📊 Features
+Interactive Analysis
+Dynamic Rolling Window: Adjustable 5-60 day analysis periods
+Exchange Filtering: View specific exchanges or global markets
+Real-time Controls: Interactive sliders and filters
+Responsive Design: Works on desktop and mobile
+Advanced Analytics
+Bollinger Bands: Volatility analysis with upper/lower bands
+Price Movements: Top 10 largest daily price changes
+Technical Indicators: Rolling averages and standard deviations
+Historical Data: 365-day historical analysis
+Modern UI/UX
+Dark Theme: Professional dark mode interface
+Interactive Charts: Hover details and zoom capabilities
+Clean Layout: Intuitive navigation and controls
+Real-time Updates: Dynamic data visualization
+📁 Project Structure
 World-Stocks-Explorer/
-├── data/                    # Data directory
+├── data/                           # Data directory
 │   └── World-Stock-Prices-Dataset.csv
-├── static/                  # Static assets
-│   └── stocks.ico
-├── images/                  # Documentation images
-├── script.py               # Main application code
-├── preswald.toml          # Preswald configuration
-├── pyproject.toml         # Python package configuration
-└── README.md              # This file
-```
-
-## 📈 Dataset
-
-Source: [World Stock Prices Dataset](https://www.kaggle.com/datasets/borismarjanovic/price-volume-data-for-all-us-stocks-etfs) (placeholder URL)
-
-The dataset includes:
-- Daily closing prices
-- Multiple global exchanges
-- Historical data spanning multiple years
-- Volume and price information
-
-## 🔮 Future Enhancements
-
-1. **Technical Analysis**
-   - Add RSI, MACD, and other technical indicators
-   - Implement custom indicator builder
-
-2. **Market Insights**
-   - Sector correlation analysis
-   - Market sentiment integration
-   - News impact analysis
-
-3. **Performance**
-   - Implement data caching
-   - Add real-time data streaming
-   - Optimize query performance
-
-## 🤝 Contributing
-
-This is an assessment project for Structured Labs. For questions or feedback, please contact the candidate.
-
----
-
-Git commit: "initial world-stocks demo" 
+├── static/                         # Static assets
+│   ├── stocks.ico
+│   └── stocks.svg
+├── images/                         # Documentation images
+├── hello.py                        # Main application (FIXED)
+├── setup.py                        # Automated setup script
+├── generate_sample_data.py         # Sample data generator
+├── preswald.toml                   # Preswald configuration
+├── pyproject.toml                  # Python package configuration
+├── requirements.txt                # Python dependencies (UPDATED)
+└── README.md                       # This file
+🔧 Technical Details
+Key Fixes Applied
+Workflow Decorators: Fixed @workflow.atom() syntax
+Data Loading: Robust CSV loading with fallback options
+Error Handling:
