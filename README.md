@@ -37,7 +37,7 @@ git clone <repository-url>
 cd World-Stocks-Explorer
 
 # Install dependencies
-pip install preswald plotly pandas
+pip3 install -r requirements.txt
 
 # Run the application
 preswald run
