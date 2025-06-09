@@ -1,7 +1,6 @@
 # 🤖 AI Job Market Explorer 2025
 An comprehensive, real-time analysis dashboard for global AI job market data, built with Preswald.
 
-![AI Job Market Explorer](images/dashboard-preview.png)
 
 ## 🚀 Quick Start
 ### Automated Setup (Recommended)
@@ -10,27 +9,17 @@ An comprehensive, real-time analysis dashboard for global AI job market data, bu
 # Navigate to project directory
 cd AI-Job-Market-Explorer
 
-# Run the setup script
-python3 setup.py
 
 # Activate virtual environment
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
-# Run the application
-preswald run
-```
-
-### Manual Setup
-```bash
-# 1. Create virtual environment
 python3 -m venv venv
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Generate sample data (if you don't have the dataset)
-python generate_sample_data.py
+
 
 # 4. Run the application
 preswald run
