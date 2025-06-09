@@ -1,15 +1,15 @@
 [project]
-title = "🤖 AI Job Market Explorer 2025"
-version = "1.0.0"
+title = "AI Job Market Analytics App"
+version = "0.1.0"
 port = 8501
-slug = "ai-job-market-explorer"
+slug = "AI-Jobs"
 entrypoint = "hello.py"
 
 [branding]
-title = "🤖 AI Job Market Explorer 2025"
-favicon = "static/ai-jobs.ico"
-color_mode = "dark"
-description = "Comprehensive analysis of global AI job opportunities and salary trends"
+name = "AI Job Market Analytics App"
+logo = "images/logo.png"
+favicon = "images/favicon.ico"
+primaryColor = "#3B82F6"
 
 [theme]
 primary_color = "#00d4aa"
@@ -30,3 +30,11 @@ refresh_interval = "1h"
 enable_filters = true
 enable_export = true
 enable_sharing = true
+
+[data.ai_job_dataset_csv]
+type = "csv"
+path = "data/ai_job_dataset.csv"
+
+[logging]
+level = "INFO"
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

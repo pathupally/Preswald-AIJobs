@@ -1,185 +1,212 @@
-# 🤖 AI Job Market Explorer 2025
-An comprehensive, real-time analysis dashboard for global AI job market data, built with Preswald.
+# 🤖 AI Job Market Analytics Dashboard
 
+> **Interactive insights into the global AI employment landscape**
+
+[![Preswald](https://img.shields.io/badge/Built%20with-Preswald-00d4aa?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh2dG1sIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzAwZDRhYSIvPgo8L3N2Zz4K)](https://github.com/StructuredLabs/preswald)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+---
+
+## 📊 Overview
+
+A sophisticated analytics dashboard that provides real-time insights into the global AI job market. Built with **Preswald** for seamless interactivity and **Plotly** for stunning visualizations.
+
+### ✨ Key Features
+
+- 🎯 **Interactive Filtering** - Filter by experience level, salary range, and location
+- 📈 **Dynamic Visualizations** - Real-time charts and graphs powered by Plotly
+- 🌍 **Global Coverage** - Data from 15,000+ job postings across multiple countries
+- 💰 **Salary Analytics** - Comprehensive salary analysis by experience and location
+- 📱 **Responsive Design** - Works seamlessly across all devices
+
+---
 
 ## 🚀 Quick Start
-### Automated Setup (Recommended)
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip package manager
+
+### Installation
+
 ```bash
-# Clone or download the project
-# Navigate to project directory
-cd AI-Job-Market-Explorer
+# Clone the repository
+git clone <repository-url>
+cd World-Stocks-Explorer
 
+# Install dependencies
+pip install preswald plotly pandas
 
-# Activate virtual environment
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-
-python3 -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-
-
-# 4. Run the application
+# Run the application
 preswald run
 ```
 
-## 📊 Features
+The dashboard will be available at `http://localhost:8501`
 
-### Interactive Analysis
-- **Dynamic Filtering**: Filter by experience level, location, and salary range
-- **Real-time Controls**: Interactive dropdowns and sliders
-- **Multi-dimensional Analysis**: Cross-filter data across multiple dimensions
-- **Responsive Design**: Works on desktop and mobile
+---
 
-### Advanced Analytics
-- **Salary Trends**: Average salaries by experience level and location
-- **Market Distribution**: Geographic distribution of AI jobs
-- **Remote Work Analysis**: Breakdown of on-site, hybrid, and remote positions
-- **Company Size Impact**: Salary analysis by company size
-- **Demand Analysis**: Most in-demand job titles and skills
+## 📈 Dashboard Features
 
-### Modern UI/UX
-- **Dark Theme**: Professional dark mode interface optimized for data analysis
-- **Interactive Charts**: Hover details, zoom capabilities, and responsive visualizations
-- **Clean Layout**: Intuitive navigation and logical information flow
-- **Real-time Updates**: Dynamic data visualization with instant filtering
+### Interactive Controls
+- **Experience Level Filter**: EN (Entry), MI (Mid), SE (Senior), EX (Executive)
+- **Salary Range Sliders**: Dynamic filtering from $0 to $300,000
+- **Real-time Updates**: Instant visualization updates based on selections
 
-## 📁 Project Structure
+### Analytics Components
+- **Salary Distribution Histogram**: Visualize salary patterns across the market
+- **Geographic Job Distribution**: Top locations by job count
+- **Sample Job Records Table**: Detailed view of filtered results
+- **Summary Statistics**: Average salaries and job counts
+
+---
+
+## 📊 Dataset Information
+
+| Metric | Value |
+|--------|-------|
+| **Total Records** | 15,000+ job postings |
+| **Data Source** | Global AI job market analysis |
+| **Time Period** | 2024-2025 |
+| **Coverage** | Multiple countries and industries |
+| **Fields** | 19 comprehensive data columns |
+
+### Data Fields
+- `job_title` - Position title and role
+- `salary_usd` - Annual salary in USD
+- `experience_level` - EN/MI/SE/EX classification
+- `company_location` - Geographic location
+- `remote_ratio` - Remote work percentage
+- `required_skills` - Technical skill requirements
+- `company_size` - Organization scale
+- `industry` - Business sector
+
+---
+
+## 🛠️ Technical Architecture
+
+### Built With
+- **[Preswald](https://github.com/StructuredLabs/preswald)** - Reactive data app framework
+- **[Plotly](https://plotly.com/python/)** - Interactive visualizations
+- **[Pandas](https://pandas.pydata.org/)** - Data manipulation and analysis
+- **[Python](https://python.org)** - Core programming language
+
+### Architecture Highlights
+- **Reactive Workflow**: Automatic updates based on user interactions
+- **Component-Based UI**: Modular design for easy maintenance
+- **Data-Driven**: Real-time filtering and analysis
+- **Performance Optimized**: Efficient data processing and rendering
+
+---
+
+## 📱 Screenshots
+
+<details>
+<summary>🎯 Interactive Dashboard</summary>
+
+![Dashboard Overview](images/dashboard.png)
+
+</details>
+
+<details>
+<summary>📊 Salary Analytics</summary>
+
+![Salary Analysis](images/salary-analysis.png)
+
+</details>
+
+---
+
+## 🔧 Configuration
+
+The application is configured via `preswald.toml`:
+
+```toml
+[project]
+title = "AI Job Market Analytics App"
+version = "0.1.0"
+port = 8501
+entrypoint = "hello.py"
+
+[data.ai_job_dataset_csv]
+type = "csv"
+path = "data/ai_job_dataset.csv"
 ```
-AI-Job-Market-Explorer/
-├── data/                           # Data directory
-│   ├── main_dataset.csv           # Main AI jobs dataset (15,000+ entries)
-│   ├── skills_analysis.csv        # Skills frequency data
-│   ├── company_profiles.csv       # Company information
-│   ├── geographic_data.csv        # Country/region details
-│   └── time_series.csv           # Monthly job market trends
-├── static/                         # Static assets
-│   ├── ai-jobs.ico
-│   └── ai-jobs.svg
-├── images/                         # Documentation images
-├── hello.py                        # Main application (AI Job Market Analytics)
-├── setup.py                        # Automated setup script
-├── generate_sample_data.py         # Sample data generator for testing
-├── preswald.toml                   # Preswald configuration
-├── pyproject.toml                  # Python package configuration
-├── requirements.txt                # Python dependencies
-└── README.md                       # This file
-```
 
-## 🔧 Technical Details
+---
 
-### Key Features Implemented
-- **Advanced Filtering**: Multi-dimensional data filtering with real-time updates
-- **Data Processing**: Robust CSV loading with comprehensive fallback options
-- **Error Handling**: Graceful handling of missing data and edge cases
-- **Sample Data Generation**: Automatic generation of realistic sample data when dataset is unavailable
-- **Performance Optimization**: Efficient data processing for large datasets (15,000+ entries)
-
-### Data Schema Support
-The application supports the complete AI Job Market dataset schema:
-
-| Column | Description | Type |
-|--------|-------------|------|
-| `job_id` | Unique identifier for each job posting | String |
-| `job_title` | Standardized job title | String |
-| `salary_usd` | Annual salary in USD | Integer |
-| `salary_currency` | Original salary currency | String |
-| `experience_level` | EN (Entry), MI (Mid), SE (Senior), EX (Executive) | String |
-| `employment_type` | FT (Full-time), PT (Part-time), CT (Contract), FL (Freelance) | String |
-| `company_location` | Country where company is located | String |
-| `company_size` | S (Small <50), M (Medium 50-250), L (Large >250) | String |
-| `remote_ratio` | 0 (No remote), 50 (Hybrid), 100 (Fully remote) | Integer |
-| `required_skills` | Top 5 required skills (comma-separated) | String |
-| `years_experience` | Required years of experience | Integer |
-| `industry` | Industry sector of the company | String |
-
-### Visualizations Included
-1. **Salary by Experience Level**: Bar chart showing average compensation progression
-2. **Geographic Distribution**: Top countries/regions for AI jobs
-3. **Salary Distribution**: Histogram of salary ranges across the market
-4. **Remote Work Trends**: Pie chart of work arrangement preferences
-5. **Company Size Analysis**: Salary comparison across different company sizes
-6. **Top Job Titles**: Table of most in-demand positions with average salaries
-
-## 📈 Use Cases
+## 🎯 Use Cases
 
 ### For Job Seekers
-- **Salary Benchmarking**: Compare salaries across experience levels and locations
-- **Market Research**: Identify high-demand skills and emerging job titles
-- **Location Planning**: Analyze geographic opportunities and cost considerations
-- **Career Progression**: Understand salary growth potential across experience levels
+- **Salary Research**: Understand market rates for your experience level
+- **Location Analysis**: Compare opportunities across different countries
+- **Skill Mapping**: Identify in-demand technical skills
 
 ### For Employers
-- **Competitive Analysis**: Benchmark compensation packages against market rates
-- **Talent Acquisition**: Identify talent hotspots and competitive landscapes
-- **Budget Planning**: Understand market rates for different roles and experience levels
-- **Remote Work Strategy**: Analyze remote work trends and preferences
+- **Market Intelligence**: Benchmark compensation against industry standards
+- **Talent Acquisition**: Understand geographic talent distribution
+- **Competitive Analysis**: Analyze competitor hiring patterns
 
-### For Researchers
-- **Market Trend Analysis**: Track evolution of AI job market over time
-- **Skills Gap Analysis**: Identify emerging skill requirements and market gaps
-- **Geographic Studies**: Analyze regional market maturity and migration patterns
-- **Economic Impact**: Study AI industry's impact on global employment
+### For Analysts
+- **Market Trends**: Track salary evolution over time
+- **Geographic Insights**: Understand regional market dynamics
+- **Skill Demand**: Identify emerging technical requirements
 
-## 🔄 Data Updates
-
-The application is designed to work with:
-- **Static Dataset**: Load from CSV files in the data directory
-- **Sample Data**: Automatically generated realistic data for testing
-- **Real-time Data**: Can be extended to pull from APIs or databases
-
-## 🛠️ Customization
-
-### Adding New Visualizations
-The modular design makes it easy to add new charts and analysis:
-
-```python
-@workflow.atom()
-def your_custom_analysis():
-    df = get_filtered_data()
-    # Your analysis logic here
-    return plotly(fig)
-```
-
-### Extending Filters
-Add new filtering dimensions by following the existing pattern:
-
-```python
-@workflow.atom()
-def new_filter():
-    df = load_data()
-    options = ["All"] + sorted(df['your_column'].unique().tolist())
-    return selectbox("Filter Name", options=options)
-```
-
-## 📊 Sample Insights
-
-Based on the comprehensive dataset analysis, the dashboard reveals:
-
-- **Salary Ranges**: Entry-level AI positions start around $75K, while executive roles reach $250K+
-- **Geographic Trends**: US, Germany, and UK lead in AI job postings
-- **Remote Work**: ~40% of AI positions now offer hybrid or fully remote options
-- **High-Demand Roles**: ML Engineers and Data Scientists represent 60% of postings
-- **Company Size Impact**: Large companies typically offer 20-30% higher compensation
+---
 
 ## 🤝 Contributing
 
-This project welcomes contributions! Areas for enhancement:
-- Additional visualization types
-- Advanced filtering capabilities
-- Skills demand analysis
-- Time-series trend analysis
-- Export functionality for reports
+We welcome contributions! Please feel free to submit a Pull Request.
+
+### Development Setup
+
+```bash
+# Fork and clone the repository
+git clone https://github.com/your-username/World-Stocks-Explorer.git
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install development dependencies
+pip install -r requirements.txt
+
+# Run the development server
+preswald run
+```
+
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 🙏 Acknowledgments
 
-- Dataset sourced from comprehensive AI job market analysis
-- Built with Preswald for interactive data applications
-- Visualization powered by Plotly for professional charts
-- Data processing handled by Pandas for efficient analysis
+- **Preswald Team** - For building an incredible reactive data app framework
+  - [@amrutha97](https://github.com/amrutha97) - Co-founder
+  - [@shivam-singhal](https://github.com/shivam-singhal) - Co-founder
+- **Open Source Community** - For the amazing tools that make this possible
+- **Data Contributors** - For providing comprehensive AI job market insights
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/your-username/World-Stocks-Explorer/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-username/World-Stocks-Explorer/discussions)
+- **Email**: your-email@example.com
+
+---
+
+<div align="center">
+
+**Made with ❤️ by the AI Job Market Analytics Team**
+
+[![GitHub stars](https://img.shields.io/github/stars/your-username/World-Stocks-Explorer?style=social)](https://github.com/your-username/World-Stocks-Explorer)
+[![GitHub forks](https://img.shields.io/github/forks/your-username/World-Stocks-Explorer?style=social)](https://github.com/your-username/World-Stocks-Explorer)
+
+</div>
