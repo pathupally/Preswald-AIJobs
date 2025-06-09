@@ -1,0 +1,27 @@
+[project]
+title = "🌍 World Stocks Explorer"
+version = "1.0.0"
+port = 8501
+slug = "world-stocks-explorer"
+entrypoint = "hello.py"
+
+[branding]
+title = "🌍 World Stocks Explorer"
+favicon = "static/stocks.ico"
+color_mode = "dark"
+description = "Real-time analysis of global stock market movements"
+
+[theme]
+primary_color = "#2563eb"
+secondary_color = "#1e40af"
+background_color = "#0f172a"
+text_color = "#f8fafc"
+
+[layout]
+sidebar_width = 300
+main_width = 1200
+chart_height = 600
+
+[data]
+cache_size = "1GB"
+refresh_interval = "5m" 
